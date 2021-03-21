@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+from IPython.display import Image, display
 
 URL_SITE = "https://www.biobiochile.cl"
 
@@ -31,8 +32,28 @@ def get_sub_sections(sections: list[str]):
                 links.append(aTag.get("href"))
     return links
 
+def get_metadata(link: str):
+    soup = get_soup(link)
+    title = soup.find("h1", attrs={"class": "post-title"}).text.strip()
+    author = soup.find("span", attrs={"class": "autor"}).find("a").text
+    create_at = soup.find("div", attrs={"class": "post-date"}).text
+
+    return {
+        "title": title,
+        "author": author,
+        "create_at": create_at
+    }
+
+def get_iamges(link: str):
+    soup = get_soup(link)
+    image = soup.find("figure").find("img")
+    if image is not None:
+        img_req = requests.get(image.get("src"))
+        return Image(img_req)
+    return None
 
 soup = get_soup(URL_SITE)
 links = get_sections(soup)
 links_sub_sections = get_sub_sections(links)
-print(links_sub_sections)
+author_data = get_metadata(links_sub_sections[0])
+img = get_iamges(links_sub_sections[0])
