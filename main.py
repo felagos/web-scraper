@@ -1,7 +1,9 @@
-from json import load
+
 from selenium import webdriver
 from selenium.webdriver.remote.webelement import WebElement
-from pprint import pprint
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 import sys 
 import re
 import time
@@ -68,7 +70,7 @@ def get_flight_stopover(flight: WebElement, driver: WebDriver):
 
 
 def get_all_flights(driver: WebDriver):
-    return driver.find_elements_by_xpath("//li[@class='sc-kkwfeq gOkuHo']")
+    return WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.XPATH, "//li[@class='sc-kkwfeq gOkuHo']")))
 
 
 def get_time_date(driver: WebDriver) -> list[str]:
@@ -92,8 +94,7 @@ def get_prices(flight):
 
         prices.append(detail)
 
-    btn = flight.find_element_by_xpath(".//div/div/div[@class='sc-aewfc lOllX']/div[2]/div/button")
-    btn.click()
+    #WebDriverWait(flight, 10).until(EC.presence_of_element_located((By.XPATH, ".//div/div/div[@class='sc-aewfc lOllX']/div[2]/div/button"))).click()
 
     return prices
 
