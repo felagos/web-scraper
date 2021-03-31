@@ -1,2 +1,6 @@
 .history
 .idea
+venv
+.vscode
+__pycache__
+results.json
